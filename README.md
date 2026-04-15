@@ -179,4 +179,8 @@ For multiple factories across locations:
 All sites would feed into a central dashboard where management could compare performance across factories.
 ```
 
+Github Repository Link -
+https://github.com/RahuRabh/Prod_Dashboard
 
+Live Dashboard Link - 
+https://prod-dashboard-three.vercel.app/
