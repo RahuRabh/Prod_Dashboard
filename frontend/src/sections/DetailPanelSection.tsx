@@ -8,6 +8,48 @@ interface DetailPanelSectionProps {
   onCloseStationDetails: () => void;
 }
 
+interface MetricTileProps {
+  label: string;
+  value: string | number;
+}
+
+function MetricTile({ label, value }: MetricTileProps) {
+  return (
+    <div className="bg-slate-50 rounded-xl p-4">
+      <p className="text-sm text-slate-500">{label}</p>
+      <p className="text-xl font-semibold text-slate-800">{value}</p>
+    </div>
+  );
+}
+
+interface PanelContentProps {
+  utilization: number;
+  metrics: MetricTileProps[];
+}
+
+function PanelContent({ utilization, metrics }: PanelContentProps) {
+  return (
+    <div className="space-y-4">
+      <div className="bg-slate-50 rounded-xl p-4">
+        <p className="text-sm text-slate-500">Utilization</p>
+        <p className="text-2xl font-bold text-slate-800">
+          {utilization.toFixed(1)}%
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        {metrics.map((metric) => (
+          <MetricTile
+            key={metric.label}
+            label={metric.label}
+            value={metric.value}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function DetailPanelSection({
   selectedWorkerDetails,
   selectedStationDetails,
@@ -22,44 +64,31 @@ function DetailPanelSection({
         onClose={onCloseWorkerDetails}
       >
         {selectedWorkerDetails && (
-          <div className="space-y-4">
-            <div className="bg-slate-50 rounded-xl p-4">
-              <p className="text-sm text-slate-500">Utilization</p>
-              <p className="text-2xl font-bold text-slate-800">
-                {selectedWorkerDetails.utilization.toFixed(1)}%
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-sm text-slate-500">Active Time</p>
-                <p className="text-xl font-semibold text-slate-800">
-                  {(selectedWorkerDetails.activeTime / 60).toFixed(0)} min
-                </p>
-              </div>
-
-              <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-sm text-slate-500">Idle Time</p>
-                <p className="text-xl font-semibold text-slate-800">
-                  {(selectedWorkerDetails.idleTime / 60).toFixed(0)} min
-                </p>
-              </div>
-
-              <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-sm text-slate-500">Units Produced</p>
-                <p className="text-xl font-semibold text-slate-800">
-                  {selectedWorkerDetails.totalUnits}
-                </p>
-              </div>
-
-              <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-sm text-slate-500">Units / Hour</p>
-                <p className="text-xl font-semibold text-slate-800">
-                  {selectedWorkerDetails.unitsPerHour.toFixed(1)}
-                </p>
-              </div>
-            </div>
-          </div>
+          <PanelContent
+            utilization={selectedWorkerDetails.utilization}
+            metrics={[
+              {
+                label: "Active Time",
+                value: `${(selectedWorkerDetails.activeTime / 60).toFixed(
+                  0
+                )} min`,
+              },
+              {
+                label: "Idle Time",
+                value: `${(selectedWorkerDetails.idleTime / 60).toFixed(
+                  0
+                )} min`,
+              },
+              {
+                label: "Units Produced",
+                value: selectedWorkerDetails.totalUnits,
+              },
+              {
+                label: "Units / Hour",
+                value: selectedWorkerDetails.unitsPerHour.toFixed(1),
+              },
+            ]}
+          />
         )}
       </DetailPanel>
 
@@ -69,44 +98,33 @@ function DetailPanelSection({
         onClose={onCloseStationDetails}
       >
         {selectedStationDetails && (
-          <div className="space-y-4">
-            <div className="bg-slate-50 rounded-xl p-4">
-              <p className="text-sm text-slate-500">Utilization</p>
-              <p className="text-2xl font-bold text-slate-800">
-                {selectedStationDetails.utilization.toFixed(1)}%
-              </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-sm text-slate-500">Occupancy Time</p>
-                <p className="text-xl font-semibold text-slate-800">
-                  {(selectedStationDetails.occupancyTime / 60).toFixed(0)} min
-                </p>
-              </div>
-
-              <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-sm text-slate-500">Productive Time</p>
-                <p className="text-xl font-semibold text-slate-800">
-                  {(selectedStationDetails.productiveTime / 60).toFixed(0)} min
-                </p>
-              </div>
-
-              <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-sm text-slate-500">Units Produced</p>
-                <p className="text-xl font-semibold text-slate-800">
-                  {selectedStationDetails.totalUnits}
-                </p>
-              </div>
-
-              <div className="bg-slate-50 rounded-xl p-4">
-                <p className="text-sm text-slate-500">Throughput</p>
-                <p className="text-xl font-semibold text-slate-800">
-                  {selectedStationDetails.throughputRate.toFixed(1)}/hr
-                </p>
-              </div>
-            </div>
-          </div>
+          <PanelContent
+            utilization={selectedStationDetails.utilization}
+            metrics={[
+              {
+                label: "Occupancy Time",
+                value: `${(
+                  selectedStationDetails.occupancyTime / 60
+                ).toFixed(0)} min`,
+              },
+              {
+                label: "Productive Time",
+                value: `${(
+                  selectedStationDetails.productiveTime / 60
+                ).toFixed(0)} min`,
+              },
+              {
+                label: "Units Produced",
+                value: selectedStationDetails.totalUnits,
+              },
+              {
+                label: "Throughput",
+                value: `${selectedStationDetails.throughputRate.toFixed(
+                  1
+                )}/hr`,
+              },
+            ]}
+          />
         )}
       </DetailPanel>
     </>
